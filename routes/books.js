@@ -1,22 +1,25 @@
 const express = require('express');
 const router = express.Router();
-const user = require('../models/user')
+const book = require('../models/book')
 
-/* GET users listing. */
+/* GET books listing. */
 router.get('/', function (req, res, next) {
-  res.send('user api');
+  res.send('book api');
 });
 router.get('/add', function (req, res, next) {
-  user.add(req, res, next);
+  book.add(req, res, next);
 });
 router.get('/queryall', function(req, res, next) {
-  user.queryAll(req, res, next);
+  book.queryAll(req, res, next);
+});
+router.get('/query', function(req, res, next) {
+  book.query(req, res, next);
 });
 router.get('/update', function(req, res, next) {
-  user.update(req, res, next);
+  book.update(req, res, next);
 });
 router.get('/delete', function(req, res, next) {
-  user.delete(req, res, next);
+  book.delete(req, res, next);
 });
 
 module.exports = router;

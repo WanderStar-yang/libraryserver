@@ -7,6 +7,7 @@ const logger = require('morgan');
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
+const booksRouter = require('./routes/books');
 const adminRouter = require('./routes/admin');
 
 const app = express();
@@ -36,7 +37,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/admin', adminRouter);
-
+app.use('/books', booksRouter);
 
 // 404处理
 app.use(function (req, res, next) {
