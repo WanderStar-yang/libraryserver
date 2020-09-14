@@ -1,7 +1,6 @@
 /**
  * 数据库配置
  */
-
 let database = {
     mysql: {
         host: 'localhost',

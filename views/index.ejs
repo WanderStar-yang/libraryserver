@@ -24,8 +24,7 @@
         var url = '/books/query?'
         url += $("#mode").val() + "=" + $("#bookquery").val();
         $.get(url, {}, function (data, status) {
-          alert(data)
-          console.log(data);
+          alert(JSON.stringify(data[0]))
         })
       })
 

@@ -1,5 +1,5 @@
 const mysql = require('mysql');
-const config = require('./config');
+const config = require('../config');
 const pool = mysql.createPool(config.mysql);
 
 //Sql语句
@@ -11,7 +11,7 @@ const commands = {
 const admin = {
     /**
      * 管理员登录
-     * @returns 返回登录成功与否 True or False
+     * @res 返回登录成功与否的消息
      */
     login: function (req, res, next) {
         var param = req.query || req.params;
