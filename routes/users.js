@@ -10,10 +10,10 @@ router.get('/', function (req, res, next) {
 router.get('/queryall', function (req, res, next) {
   user.queryAll(req, res, next);
 });
-router.get('/update', function (req, res, next) {
+router.post('/update', function (req, res, next) {
   user.update(req, res, next);
 });
-router.get('/delete', function (req, res, next) {
+router.post('/delete', function (req, res, next) {
   user.delete(req, res, next);
 });
 router.post('/register', function (req, res, next) {

@@ -32,7 +32,7 @@ const book = {
                         if (err) {
                             res.send(err);
                         } else {
-                            res.json({ code: 200, msg: 'book add success' });
+                            res.json({ code: 200, msg: 'BOOK ADD SUCCESS' });
                         }
                         // 释放连接 
                         connection.release();
@@ -99,7 +99,7 @@ const book = {
                         if (err)
                             res.send(err);
                         else
-                            res.json({ code: 200, msg: 'book update success' });
+                            res.json({ code: 200, msg: 'BOOK UPDATE SUCCESS' });
                         // 释放连接 
                         connection.release();
                     });
@@ -119,7 +119,7 @@ const book = {
                     if (err) {
                         res.send(err);
                     } else {
-                        res.json({ code: 200, msg: 'book delete success' });
+                        res.json({ code: 200, msg: 'BOOK DELETE SUCCESS' });
                     }
                     connection.release();
                 });

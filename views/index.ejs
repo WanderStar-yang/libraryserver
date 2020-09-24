@@ -2,64 +2,87 @@
 <html>
 
 <head>
-  <title><%= title %></title>
-  <link rel='stylesheet' href='/stylesheets/style.css' />
-  <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js">
-  </script>
-  <script>
-    $(document).ready(function () {
-      $(".login").click(function () {
-        var url = '/admin/login?'
-        url += "username=" + $("#username").val();
-        url += "&password=" + $("#password").val();
-        $.post(url, {}, function (data, status) {
-          if (data.code == 200) {
-            alert("登录成功！")
-          } else if (data.code == -1) {
-            alert("登录失败，检查用户名或密码！")
-          }
-        })
-      });
-      $(".bookquery").click(function () {
-        var url = '/books/query?'
-        url += $("#mode").val() + "=" + $("#bookquery").val();
-        $.get(url, {}, function (data, status) {
-          alert(JSON.stringify(data[0]))
-        })
-      })
-
-    });
-  </script>
+    <title>
+        <%= title %>
+    </title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js">
+    </script>
+    <script>
+        $(document).ready(function() {
+            $(".login").click(function() {
+                var url = '/users/login?'
+                url += "username=" + $("#username").val();
+                url += "&password=" + $("#password").val();
+                $.post(url, {}, function(data, status) {
+                    if (data.code == 200) {
+                        alert("登录成功！")
+                    } else if (data.code == -1) {
+                        alert("登录失败，检查用户名或密码！")
+                    }
+                })
+            });
+            $(".bookquery").click(function() {
+                var url = '/books/query?'
+                url += $("#mode").val() + "=" + $("#bookquery").val();
+                $.get(url, {}, function(data, status) {
+                    alert(JSON.stringify(data[0]))
+                })
+            })
+            $(".admin-login").click(function() {
+                var url = '/admin/login?'
+                url += "username=" + $("#admin-username").val();
+                url += "&password=" + $("#admin-password").val();
+                $.post(url, {}, function(data, status) {
+                    if (data.code == 200) {
+                        alert("登录成功！")
+                    } else if (data.code == -1) {
+                        alert("登录失败，检查用户名或密码！")
+                    }
+                })
+            });
+        });
+    </script>
 </head>
 
 <body>
-  <div id="main" style="margin: 0;text-align: center;">
-    <h1><%= title %></h1>
-    <p>这里是 <%= title %> 的简单查询页面，有以下功能</p>
-    <hr>
+    <div id="main" style="margin: 0;text-align: center;">
+        <h1>
+            <%= title %>
+        </h1>
+        <p>这里是
+            <%= title %> 的简单查询页面，有以下功能</p>
+        <hr>
 
-    <div class="login-box">
-      <h2>管理员登陆</h2>
-      <p>账号：<input type="text" id="username"></p>
-      <p>密码：<input type="password" name="" id="password"></p>
-      <button class="login">登录</button>
-    </div>
-    <hr>
+        <div class="login-box">
+            <h2>用户登陆</h2>
+            <p>账号：<input type="text" id="username"></p>
+            <p>密码：<input type="password" name="" id="password"></p>
+            <button class="login">登录</button>
+        </div>
+        <hr>
 
 
-    <div class="query-box">
-      <h2>书籍检索</h2>
-      <select id="mode" name="mode">
+        <div class="query-box">
+            <h2>书籍检索</h2>
+            <select id="mode" name="mode">
         <option value="title">书名</option>
         <option value="isbn">ISBN</option>
         <option value="no">书号</option>
       </select>
-      <input type="text" id="bookquery"></p>
-      <button class="bookquery">查询</button>
-    </div>
+            <input type="text" id="bookquery"></p>
+            <button class="bookquery">查询</button>
+        </div>
 
-    <hr>
-  </div>
+        <hr>
+        <div class="admin-login-box">
+            <h2>管理员登陆</h2>
+            <p>账号：<input type="text" id="admin-username"></p>
+            <p>密码：<input type="admin-password" name="" id="password"></p>
+            <button class="admin-login">登录</button>
+        </div>
+        <hr>
+    </div>
 
 </body>
 
