@@ -2,8 +2,11 @@ const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
 const logger = require('morgan');
 const session = require('express-session');
+const multer = require('multer');
+const objMulter = multer({ dest: './uploads' })
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
@@ -20,34 +23,40 @@ app.set('view engine', 'ejs');
 //允许前端 跨域请求
 app.all('*', function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, Content-Type, Access-Token");
     res.header("Access-Control-Allow-Methods", "*");
     res.header("Access-Control-Allow-Credentials", "true");
     /*
     处理cookie信息，如果有，并且不对每次请求都新开一个session
     axios.defaults.withCredentials = true;//每次请求，无论是否跨域，都带上cookie信息
     */
-    res.header("Access-Control-Allow-Headers", "Content-Type");
     next();
 })
 
 // 设置中间件
 app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+/* app.use(express.json());
+app.use(express.urlencoded({ extended: false })); */
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
     secret: "library",
     resave: false,
     saveUninitialized: true,
     cookie: ('account', 'value', { maxAge: 5 * 60 * 1000, secure: false })
 }));
+// -form表单解析和上传用
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(objMulter.any());
+app.use(express.static(path.join(__dirname, 'public')));
+
 
 // 设置路由
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/admin', adminRouter);
 app.use('/books', booksRouter);
+app.use('/uploads', express.static('uploads'));
 
 // 404处理
 app.use(function(req, res, next) {
