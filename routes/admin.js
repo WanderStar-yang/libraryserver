@@ -13,7 +13,10 @@ router.post('/logout', function(req, res, next) {
     admin.logout(req, res, next);
 });
 router.post('/uploadavatar', function(req, res, next) {
-    admin.uploadAvatar(req, res, req.files, next)
+    admin.uploadAvatar(req, res, next)
+})
+router.post('/updateinfo', function(req, res, next) {
+    admin.updateInfo(req, res, next)
 })
 
 module.exports = router;

@@ -6,10 +6,16 @@ const fs = require('fs')
 
 //Sql语句
 const commands = {
-    query: "select password from admin where username = ?",
-    updateLastLogin: "update admin set token = ?,lastLoginIp=?,lastLoginTime=? where username = ?",
+    login: "select password from admin where username = ?",
     queryByToken: "select * from admin where token = ?",
-    avatarByToken: "update admin set avatar = ? where token = ?",
+
+    updateLastLogin: "update admin set token = ?,lastLoginIp = ?,lastLoginTime = ? where username = ?",
+
+
+
+    updatePassword: "update admin set password = ? where token = ?",
+    updateInfo: "update admin set name = ?, sex = ?, email = ?, introduction = ? where token = ?",
+    updateAvatar: "update admin set avatar = ? where token = ?",
 };
 
 // 导出的方法对象
@@ -19,14 +25,14 @@ const admin = {
      * @res 返回登录成功与否的消息
      */
     login: function(req, res, next) {
-        let param = req.body || req.query || req.params;
+        const param = req.body || req.query || req.params;
 
         //取出连接
         pool.getConnection(function(err, connection) {
             if (err) {
                 console.log("数据库连接失败")
             } else {
-                connection.query(commands.query, param.username, function(err, row) {
+                connection.query(commands.login, param.username, function(err, row) {
                     if (err) {
                         res.send(err);
                     } else {
@@ -38,7 +44,7 @@ const admin = {
                                 req.socket.remoteAddress ||
                                 req.connection.socket.remoteAddress || '';
                             connection.query(commands.updateLastLogin, [token, ip, Date.now(), param.username]);
-                            res.json(utils.builder({ 'token': token }, "", 200, {}));
+                            res.json(utils.builder({ 'token': token }, "", 200));
                         } else
                             res.json(401, utils.builder({ isLogin: true }, '账户或密码错误', 401));
 
@@ -64,9 +70,9 @@ const admin = {
                         res.send(err);
                     } else {
                         if (row[0]) {
-                            res.json(utils.builder(JSON.parse(JSON.stringify(row[0])), "", 200, {}));
+                            res.json(utils.builder(JSON.parse(JSON.stringify(row[0])), "", 200));
                         } else
-                            res.status(401).json(utils.builder({ isLogin: true }, '没有信息', 401));
+                            res.status(401).json(utils.builder({ isLogin: true }, "没有信息", 401));
                     }
                     // 释放连接 
                     connection.release();
@@ -87,10 +93,9 @@ const admin = {
         const token = req.get('access-token');
         if (req.files != [] && req.files != undefined) {
             for (let i = 0; i < req.files.length; i++) {
-                let originalname = req.files[i].originalname;
-                let extendName = originalname.substr(originalname.lastIndexOf('.'));
                 let oldPath = req.files[i].path;
-                let newFileName = req.files[i].filename + extendName;
+                let newFileName = req.files[i].filename;
+                console.log(req.files[i]);
                 //存入数据库
                 pool.getConnection(function(err, connection) {
                     if (err) {
@@ -103,15 +108,15 @@ const admin = {
                                 }
                             }
                         });
-                        connection.query(commands.avatarByToken, [newFileName, token], function(err, row) {
+                        connection.query(commands.updateAvatar, [newFileName + ".jpg", token], function(err, row) {
                             if (err) {
                                 res.send(err);
                             } else {
-                                fs.rename(oldPath, 'uploads\\avatar\\' + newFileName, function(err) {
+                                fs.rename(oldPath, 'uploads\\avatar\\' + newFileName + ".jpg", function(err) {
                                     if (!err) {
-                                        res.json(utils.builder({ url: newFileName, status: 'done' }, ))
+                                        res.json(utils.builder({ url: newFileName + ".jpg", status: 'done' }, "", 200))
                                     } else {
-                                        res.status(401).json(utils.builder({}, '上传失败', 401));
+                                        res.status(401).json(utils.builder({}, "上传失败", 401));
                                     }
                                 })
                             }
@@ -127,7 +132,36 @@ const admin = {
             res.send('上传的文件为空！');
         }
 
-    }
+    },
+    /**
+     * 修改简介
+     */
+    updateInfo: function(req, res, next) {
+        const param = req.body || req.query || req.params;
+        const token = req.get('access-token');
+        //取出连接
+        pool.getConnection(function(err, connection) {
+            if (err) {
+                console.log("数据库连接失败")
+            } else {
+                connection.query(commands.updateInfo, [param.name, param.sex, param.email, param.introduction, token],
+                    function(err, row) {
+                        if (err) {
+                            res.send(err);
+                        } else {
+                            if (row.affectedRows == 1) {
+                                res.json(utils.builder({ status: 'done' }, "修改成功", 200));
+                            } else
+                                res.status(401).json(utils.builder({}, '修改失败', 401));
+                        }
+                        // 释放连接 
+                        connection.release();
+                    });
+            }
+        });
+    },
+
+
 }
 
 module.exports = admin;
